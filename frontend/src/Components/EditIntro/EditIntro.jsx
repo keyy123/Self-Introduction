@@ -1,6 +1,9 @@
 import React, {useState} from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateIntro } from '../../services/intros';
+import {Button, TextField, Box} from '@mui/material';
+import './EditIntro.css';
+
 
 export default function EditIntro() {
     let {id} = useParams();
@@ -35,14 +38,16 @@ export default function EditIntro() {
 
   return (
     <div>
-        Edit An Intro!
+       <Box sx={{p:1, border: '1px solid gray', width:'60%', m: '20px auto 0', borderRadius: '12px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <h1>Edit An Intro!</h1>
         <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={name} onChange={e => handleChange(e)} placeholder="name"/> <br/>
-        <input type="text" name="job" value={job} onChange={e => handleChange(e)} placeholder="job"/> <br/>
-        <input type="text" name="hobbies" value={hobbies} onChange={e => handleChange(e)} placeholder="hobbies"/> <br/>
-        <button type="submit">Update Intro</button>
-        <button type="button" onClick={handleReturn}>Dashboard</button>
+        <TextField className='edit field name' type="text" name="name" value={name} onChange={e => handleChange(e)} placeholder="name"/> <br/>
+        <TextField className='edit field job' type="text" name="job" value={job} onChange={e => handleChange(e)} placeholder="job"/> <br/>
+        <TextField className='edit field hobbies' type="text" name="hobbies" value={hobbies} onChange={e => handleChange(e)} placeholder="hobbies"/> <br/>
+        <Button type="submit">Update Intro</Button>
+        <Button type="button" onClick={handleReturn}>Dashboard</Button>
         </form>
+        </Box>
     </div>
   )
 }

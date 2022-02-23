@@ -2,8 +2,9 @@
 import React, {useEffect, useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUsers } from '../../services/intros'
-
-export default function Intros({currentUser}) {
+import { Paper, Button } from '@mui/material'
+import './Intros.css'
+export default function Intros() {
     let navigate = useNavigate()
     const [allUsers, setAllUsers]= useState([])
 
@@ -38,7 +39,7 @@ const handleCreate = async e => {
         allUsers?.map((user)=>{
             return(
             <div>
-                <li>
+                <Paper elevation={1} sx={{m:5, p:2}}>
                     <h1>{`Username: ${user.user_name}`}</h1>
                     <h2>{`Email: ${user.user_email}`}</h2>
                     <h3>{`Role: ${user.role}`}</h3>
@@ -46,19 +47,20 @@ const handleCreate = async e => {
                     <h5>{user.intro.map((intro)=>{
                         return(
                             <>
-                            <p>{intro.hobbies}</p>
-                            <Link to={`/dashboard/intros/${intro.intro_id}`}>{intro.intro_id}</Link>
+                            <Link to={`/dashboard/intros/${intro.intro_id}`}>{intro.hobbies}<br/><br/></Link>
                             </>
                         )
                     })}</h5>
-                </li>
+                </Paper>
             </div>
             )})
             : <div>
-                <h1>No Intros Here, Partner</h1>
-                <button onClick={handleCreate}>Make A Intro</button>
+                <Paper elevation={1} sx={{m:5, p:2, display:'flex', flexDirection:'column', alignItems:'center'}}>
+                <h1 style={{textAlign:'center'}}>No Intros Here, Partner</h1>
+                <Button onClick={handleCreate}>Make A Intro</Button>
+                </Paper>
             </div>}
-            <button onClick={handleNav}>Dashboard</button>
+            <Button variant='contained' className="intros home-btn" onClick={handleNav}>Dashboard</Button>
     </div>
   )
 }

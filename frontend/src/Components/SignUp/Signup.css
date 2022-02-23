@@ -1,0 +1,8 @@
+.signup.field{
+    margin-bottom: 10px;
+}
+
+.signup.btn-group{
+    display: flex;
+    justify-content: center;
+}

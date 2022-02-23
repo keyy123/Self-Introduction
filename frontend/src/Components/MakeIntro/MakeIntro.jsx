@@ -1,7 +1,8 @@
 import React,{useState} from 'react'
 import { makeIntro } from '../../services/intros'
 import { useNavigate } from 'react-router-dom';
-
+import { TextField, Box, Button } from '@mui/material';
+import './MakeIntro.css'
 export default function MakeIntro() {
 let navigate = useNavigate()
 
@@ -30,14 +31,16 @@ const handleReturn = async e => {
 
   return (
     <div>
-        Create A New Intro!
+      <Box sx={{p:1, border: '1px solid gray', width:'60%', m: '20px auto 0', borderRadius: '12px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <h1>Create A New Intro!</h1>
         <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={name} onChange={e => handleChange(e)} placeholder="name"/> <br/>
-        <input type="text" name="job" value={job} onChange={e => handleChange(e)} placeholder="job"/> <br/>
-        <input type="text" name="hobbies" value={hobbies} onChange={e => handleChange(e)} placeholder="hobbies"/> <br/>
-        <button type="submit">Create Intro</button>
-        <button type="button" onClick={handleReturn}>Dashboard</button>
+        <TextField className='create field name' type="text" name="name" value={name} onChange={e => handleChange(e)} placeholder="name"/> <br/>
+        <TextField className='create field job' type="text" name="job" value={job} onChange={e => handleChange(e)} placeholder="job"/> <br/>
+        <TextField className='create field hobbies' type="text" name="hobbies" value={hobbies} onChange={e => handleChange(e)} placeholder="hobbies"/> <br/>
+        <Button type="submit">Create Intro</Button>
+        <Button type="button" onClick={handleReturn}>Dashboard</Button>
         </form>
+        </Box>
     </div>
   )
 }

@@ -1,0 +1,8 @@
+.home.signout{
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.home.guide{
+    text-align: center;
+}

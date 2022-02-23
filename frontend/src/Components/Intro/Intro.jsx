@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import { useNavigate, useParams} from 'react-router-dom';
 import { getIntro, deleteIntro } from '../../services/intros';
+import {Button, Paper} from '@mui/material';
 
-export default function Intro({currentUser}) {
+import './Intro.css'
+export default function Intro() {
     const [oneIntro, setOneIntro] = useState()
 
     let {id} = useParams();
@@ -37,14 +39,16 @@ export default function Intro({currentUser}) {
         {oneIntro?.map((element)=>{
             return(
                 <>
+                <Paper elevation={3} sx={{m: 5, p: 3}}>
                      <h1>{`Creator: ${element.name}`}</h1>
                      <h2>{`Occupation: ${element.job}`}</h2>
-                     <p>{`interests: ${element.hobbies}`}</p>
-                     <div>
-                     <button onClick={handleDelete}>Delete</button>
-                     <button onClick={handleEdit}>Edit</button>
-                     <button onClick={handleReturn}>Back</button>
+                     <h3>{`interests: ${element.hobbies}`}</h3>
+                     <div className='intro btn-group'>
+                     <Button onClick={handleDelete}>Delete</Button>
+                     <Button onClick={handleEdit}>Edit</Button>
+                     <Button onClick={handleReturn}>Back</Button>
                      </div>
+                </Paper>
                 </>
             )
         })}

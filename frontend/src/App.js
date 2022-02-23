@@ -8,6 +8,8 @@ import Landing from './Components/Landing/Landing';
 import Signup from './Components/SignUp/Signup';
 import Login from './Components/LogIn/Login';
 
+
+
 function App() {
 
 const [auth, setAuth] = useState(false);
@@ -42,9 +44,9 @@ console.log(auth)
         <Route path="/" element={<Landing/>}/>
         <Route path="/register" element={<Signup auth={auth} setAuth={setAuth}/>}/>
         <Route path="/login/*" element={<Login auth={auth} setAuth={setAuth} setCurrentUser={setCurrentUser} currentUser={currentUser}/>}/>
-        <Route path="/dashboard/*" element={<Dashboard currentUser={currentUser} setCurrentUser={setCurrentUser}/> }/>
+        <Route path="/dashboard/*" element={<Dashboard auth={auth} currentUser={currentUser} setCurrentUser={setCurrentUser}/> }/>
+      </Routes>
 
-     </Routes>
     </>
   );
 }

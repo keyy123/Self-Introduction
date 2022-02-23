@@ -1,0 +1,17 @@
+.form.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form{
+    margin-bottom: 10px;
+}
+
+.form.header{
+    text-align:center;
+}
+
+.form.submit:active{
+    opacity: .70;
+}

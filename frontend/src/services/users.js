@@ -9,6 +9,7 @@ export const signUp = async (credentials) => {
     console.log(res)
     localStorage.setItem("token", res.data.token);
     let user = jwtDecode(res.data.token);
+    console.log(user)
     return user;
   } catch (e) {
     throw e;
@@ -30,6 +31,8 @@ export const login = async (credentials) => {
 export const signOut = async () => {
   try {
     localStorage.removeItem("token")
+    localStorage.removeItem("role")
+    localStorage.removeItem("username")
     return true
   } catch (e) {
     throw e;
