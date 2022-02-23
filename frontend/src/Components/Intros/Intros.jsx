@@ -1,11 +1,14 @@
 
 import React, {useEffect, useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getUsers } from '../../services/intros'
+import { userDelete } from '../../services/users'
 import { Paper, Button } from '@mui/material'
 import './Intros.css'
+
 export default function Intros() {
     let navigate = useNavigate()
+    let {id} = useParams()
     const [allUsers, setAllUsers]= useState([])
 
 useEffect(() => {
@@ -33,6 +36,19 @@ const handleCreate = async e => {
     navigate("/dashboard/make-intro")
 }
 
+const handleUserDelete = async (e, id) => {
+    e.preventDefault()
+    const deleteUser = await userDelete(id)
+    console.log(deleteUser)
+    navigate("/dashboard")
+}
+
+const handleUserEdit = async (e, id) => {
+    e.preventDefault()
+    console.log('Sending to User Edit Page');
+    navigate(`/dashboard/edit-user/${id}`)
+}
+
   return (
     <div>
         {allUsers.length > 0 ?
@@ -51,6 +67,8 @@ const handleCreate = async e => {
                             </>
                         )
                     })}</h5>
+                    <Button onClick={(e)=>{handleUserEdit(e, user.user_id)}}>Edit User</Button>
+                    <Button onClick={(e)=>{handleUserDelete(e, user.user_id)}}>Remove User</Button>
                 </Paper>
             </div>
             )})

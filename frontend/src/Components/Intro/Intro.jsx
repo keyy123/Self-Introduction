@@ -6,24 +6,28 @@ import {Button, Paper} from '@mui/material';
 import './Intro.css'
 export default function Intro() {
     const [oneIntro, setOneIntro] = useState()
-
+    const [introId,setIntroId] = useState(0)
     let {id} = useParams();
     let navigate = useNavigate()
     
     useEffect(() => {
     const findIntro = async() =>{
         const res = await getIntro(id);
-        let arr = []
-        arr.push(res)
-        setOneIntro(arr);
-        console.log(oneIntro);
+        console.log(res)
+        setIntroId(res.intro_id)
+        setOneIntro([res])
+        // let arr = []
+        // arr.push(res)
+        // setOneIntro(arr);
+        // console.log(oneIntro, arr);
     }
     findIntro();    
     }, []);
 
-    const handleDelete = async()=>{
-        await deleteIntro(id);
-        navigate("/dashboard")
+    const handleDelete = async (e, id)=>{
+         e.preventDefault()
+         await deleteIntro(id);
+         navigate("/dashboard/intros")
     }
 
     const handleEdit = () => {
@@ -31,7 +35,7 @@ export default function Intro() {
     }
 
     const handleReturn = () => {
-        navigate(`/dashboard/intros`)
+        navigate("/dashboard/intros")
     }
 
     return (
@@ -44,7 +48,7 @@ export default function Intro() {
                      <h2>{`Occupation: ${element.job}`}</h2>
                      <h3>{`interests: ${element.hobbies}`}</h3>
                      <div className='intro btn-group'>
-                     <Button onClick={handleDelete}>Delete</Button>
+                     <Button onClick={(e)=>{handleDelete(e, introId)}}>Delete</Button>
                      <Button onClick={handleEdit}>Edit</Button>
                      <Button onClick={handleReturn}>Back</Button>
                      </div>

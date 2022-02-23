@@ -1,8 +1,6 @@
 import api from "./apiConfig";
 import jwtDecode from "jwt-decode";
 
-
-
 export const signUp = async (credentials) => {
   try {
     const res = await api.post("/auth/sign-up", credentials);
@@ -52,3 +50,35 @@ export const verify = async () => {
     throw e;
   }
 };
+
+// Adding In The User Edit and User Delete Routes
+
+export const userDelete = async (id) => {
+  try {
+    const res = await api.delete(`/dashboard/user/${id}`)
+    console.log(res)
+    return res
+  } catch (e) {
+    throw e
+  }
+}
+
+export const userEdit = async (id, credentials) => {
+  try {
+    const res = await api.put(`/dashboard/user/${id}`, credentials)
+    console.log(res)
+    return res
+  } catch (e) {
+    throw e
+  }
+}
+
+export const getUser = async (id) => {
+  try {
+    const res = await api.get(`/dashboard/user/${id}`)
+    console.log(res)
+    return res
+  } catch (e) {
+    throw e
+  }
+}

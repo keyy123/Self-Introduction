@@ -13,7 +13,7 @@ model intro {
   name     String? @db.VarChar(200)
   job      String?
   hobbies  String?
-  users    users?  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  users    users?  @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model users {

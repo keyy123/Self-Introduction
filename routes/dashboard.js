@@ -3,6 +3,7 @@ const pool = require("../db")
 const auth = require("../middleware/auth")
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
+const bcrypt = require("bcrypt")
 
 //Don't remove this route
 
@@ -32,6 +33,7 @@ router.get("/", auth, async (req, res)=>{
             },
             select:{
                 user_name:true,
+                user_id:true,
                 role:true,
                 intro: {
                     select:{
@@ -50,36 +52,124 @@ router.get("/", auth, async (req, res)=>{
     }
 })
 
-//Get all intros and name ONLY if you are an admin - it is working fine
-// Unfortunately, I am running out of time so I will only make 1 admin route to save more time!
-// router.get("/", auth, async(req,res)=>{
-//     try {
-//         const adminUser = await prisma.users.findMany({
-//             where:{
-//                 role: 'admin',
-//                 user_id: req.user
-//             }
-//         })
-//     //console.log(adminUser[0].role) //returns the role
+router.get("/user/:id", auth, async (req, res)=>{
+    try {
+        let {id} = req.params
+        const adminUser = await prisma.users.findMany({
+            where:{
+                role: 'admin',
+                user_id: req.user,
+            },
+            include: {
+                intro: true,
+            },
+        });
+        if(adminUser.length === 1){
+            const getUser = await prisma.users.findMany({
+                where: {
+                    role: 'user',
+                    user_id: id
+                }
+            }) //Only return the user ids
+            res.status(200).send(getUser)
+        } else {
+               return res.status(403).status("You are not authorized to do this operation")
+        }
+    } catch (e) {
+        res.status(500).send(e.message)
+    }
+    })
 
-//     if(adminUser[0].role === 'admin'){
-//         const allUsers = await prisma.users.findMany();
-//         console.log(allUsers)
-//     }
+router.delete("/user/:id", auth, async (req, res)=>{
+try {
+    let {id} = req.params
+    const adminUser = await prisma.users.findMany({
+        where:{
+            role: 'admin',
+            user_id: req.user,
+        },
+        include: {
+            intro: true,
+        },
+    });
+    if(adminUser.length === 1){
+        const deletedUser = await prisma.users.deleteMany({
+            where: {
+                role: 'user',
+                user_id: id
+            }
+        }) //Only return the user ids
+        res.status(200).send(deletedUser)
+    } else {
+        if(id !== req.user){
+           return res.status(403).status("You are not authorized to do this operation")
+        }
+        const deletedUser = await prisma.users.deleteMany({
+            where: {
+                role: 'user',
+                user_id: req.user
+            }    
+        })
+        res.status(200).send(deletedUser)
+    }
+} catch (e) {
+    res.status(500).send(e.message)
+}
+})
 
-//     } catch (e) {
-//         res.status(500).send(e.message)
-//     }
-// })
-
-// router.get("/intros", auth, async (req, res)=>{
-//     try {
+router.put("/user/:id", auth, async (req, res)=>{
+    try {
+        let {id} = req.params
+        const {name, email, password} = req.body 
+        const saltRound = 7;
+        const salt = await bcrypt.genSalt(saltRound);
+        const bcryptPass = await bcrypt.hash(password, salt)
         
-//     } catch (e) {
-//         console.error(e.message)
-        
-//     }
-// })
+        const adminUser = await prisma.users.findMany({
+            where:{
+                role: 'admin',
+                user_id: req.user,
+            },
+            include: {
+                intro: true,
+            },
+        });
+        if(adminUser.length === 1){
+            // Do Admin Operation
+            const updatedUser = await prisma.users.updateMany({
+                where:{
+                    role: 'user',
+                    user_id: id
+                },
+                data:{
+                    user_name: name,
+                    user_email: email,
+                    user_password: bcryptPass
+                }
+            });
+            res.status(200).send(updatedUser)
+        }else{
+            if(id !== req.user){
+                return res.status(403).send("You are not authorized to do this operation")
+            }
+            const updatedUser = await prisma.users.updateMany({
+                where:{
+                    role: 'user',
+                    user_id: req.user
+                },
+                data: {
+                    user_name: name,
+                    user_email: email,
+                    user_password: bcryptPass
+                }
+            });
+            res.status(200).send(updatedUser)
+        }
+    } catch (e) {
+        res.status(500).send(e.message)
+    }
+})
+
 
 router.get("/intros/:id", auth, async(req, res)=>{
     try {
@@ -97,7 +187,7 @@ router.get("/intros/:id", auth, async(req, res)=>{
         if(adminUser.length === 1){
             const oneIntro = await prisma.intro.findUnique({
                 where:{
-                    intro_id: Number(id)
+                    intro_id: Number(id),
                 }
             });
             console.log(oneIntro)
@@ -146,12 +236,31 @@ router.post("/intro", auth, async (req,res)=>{
 //Update a intro 
 
 router.put("/intros/:id", auth, async (req, res)=>{
-    try {
-        const {id} = req.params;
-        const {name, job, hobbies} = req.body;
-        // let updatedIntro = await pool.query("UPDATE intro SET name = $1, job = $2, hobbies = $3 WHERE intro_id = $4 AND user_id = $5 RETURNING *",
-        // [name, job, hobbies, id, req.user]
-        // );
+    try { 
+    const {id} = req.params;
+    const {name, job, hobbies} = req.body;
+    const adminUser = await prisma.users.findMany({
+        where:{
+            role: 'admin',
+            user_id: req.user,
+        },
+        include: {
+            intro: true,
+        },
+    });
+    if(adminUser.length === 1){
+        const updatedIntro = await prisma.intro.updateMany({
+            where: {
+                intro_id: Number(id),
+                },
+            data:{
+                name: name,
+                job: job,
+                hobbies: hobbies,
+            },
+        });
+        res.status(200).send(updatedIntro)
+    } else{  
         const updatedIntro = await prisma.intro.updateMany({
             where: {
                 intro_id: Number(id),
@@ -174,7 +283,7 @@ router.put("/intros/:id", auth, async (req, res)=>{
     }
     
     res.status(200).send("Introduction updated!")
-        
+}
     } catch (e) {
         res.status(500).send(e.message)
         
@@ -194,6 +303,23 @@ router.delete("/intros/:id",auth, async(req,res)=>{
         // if(deleteIntro.rows.length === 0){
         //     res.status(403).send("You can't interrupt someone else's introduction, that's rude ")
         // }
+        const adminUser = await prisma.users.findMany({
+            where:{
+                role: 'admin',
+                user_id: req.user,
+            },
+            include: {
+                intro: true,
+            },
+        });
+        if(adminUser.length === 1){
+            const deleteIntro = await prisma.intro.deleteMany({
+                where: {
+                    intro_id: Number(id), 
+                }
+            });
+            res.status(200).status("Introduction deleted!")
+        }else{
         const deleteIntro = await prisma.intro.deleteMany({
             where: {
                 intro_id: Number(id), 
@@ -209,6 +335,7 @@ router.delete("/intros/:id",auth, async(req,res)=>{
         }
 
         res.status(200).send("Introduction deleted!")
+    }
     } catch (e) {
         res.status(500).send(e.message)
     } 

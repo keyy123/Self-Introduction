@@ -39,7 +39,8 @@ export const updateIntro = async(id, input) => {
 export const deleteIntro = async(id) => {
     try {
         const res = await api.delete(`/dashboard/intros/${id}`)
-        return res.data;
+        console.log(res)
+        return res.data
     } catch (e) {
         throw e;      
     }

@@ -3,10 +3,19 @@ const app = express()
 const pool = require("./db")
 const cors = require("cors")
 const apiRoutes = require("./routes/index")
-
+const path = require('path')
 app.use(express.json())
 app.use(cors())
 app.use("/api", apiRoutes)
+
+
+//Build Serving 
+
+app.use(express.static(path.join(__dirname, "./frontend/build")));
+
+app.get('*', (req,res)=>{
+    res.sendFile(path.join(__dirname, './frontend/build/index.html'))
+})
 
 app.get("/api", (req,res)=>{
     res.send("Welcome to the introduction api")

@@ -8,6 +8,7 @@ import Intro from '../Intro/Intro'
 import MakeIntro from '../MakeIntro/MakeIntro'
 import EditIntro from '../EditIntro/EditIntro'
 import Landing from '../Landing/Landing'
+import EditUser from '../EditUser/EditUser'
 
 export default function Dashboard({currentUser, auth}) {
 
@@ -21,6 +22,7 @@ export default function Dashboard({currentUser, auth}) {
       <Route path="intros/:id" element={<Intro />}/>
       <Route path="edit-intro/:id" element={<EditIntro />} />
       <Route path="make-intro" element={<MakeIntro/>}/>
+      <Route path="edit-user/:id" element={<EditUser/>}/>
     </Route>
     <Route path="*" element={<Landing/>}/>
 </Routes>

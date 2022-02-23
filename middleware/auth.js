@@ -6,7 +6,7 @@ module.exports = async(req, res, next) =>{
         if(!token){
             return res.status(403).send("No token - authenticate")
         }
-        let verify = jwt.verify(token, process.env.SECRET)
+        let verify = jwt.verify(token, process.env.SECRET || 'secretbox')
         req.user = verify.user;
         next();
     } catch (e) {

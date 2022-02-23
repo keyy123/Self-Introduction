@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { updateIntro } from '../../services/intros';
+import { updateIntro, getIntro} from '../../services/intros';
 import {Button, TextField, Box} from '@mui/material';
 import './EditIntro.css';
 
@@ -14,7 +14,17 @@ export default function EditIntro() {
         job: "",
         hobbies:""
     })
-    
+
+    useEffect(()=>{
+        const prevData = async (id) => {
+            const res = await getIntro(id)
+            console.log(res)
+            const intro = res
+            setInputs({name: intro.name, job: intro.job, hobbies: intro.hobbies})
+        }
+        prevData(id)
+    },[])
+
     let {name, job, hobbies} = inputs;
     
     const handleChange = e => {

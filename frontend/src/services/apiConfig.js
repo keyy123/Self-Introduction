@@ -9,7 +9,7 @@ const getToken = () => {
 const api = axios.create({
     baseURL:
     process.env.NODE_ENV === 'production'
-    ?"PRODUCTION LINK"
+    ?"http://localhost:3001/api"
     :"http://localhost:3001/api"
 })
 
